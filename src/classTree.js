@@ -1,10 +1,12 @@
 import buildTree from "./buildTree.js";
 import removeDuplicates from "./removeDuplicates.js";
+import mergeSort from "./mergeSort.js";
 
 export default class Tree {
   constructor(array) {
-    const noDuplicatesArray = removeDuplicates(array);
-    const sortedArray = noDuplicatesArray.sort((a, b) => a - b);
+    const tempArray = array.slice();
+    const noDuplicatesArray = removeDuplicates(tempArray);
+    const sortedArray = mergeSort(noDuplicatesArray);
     this.root = buildTree(sortedArray);
   }
   prettyPrint(node = this.root, prefix = "", isLeft = true) {
