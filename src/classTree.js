@@ -3,6 +3,7 @@ import removeDuplicates from "./removeDuplicates.js";
 import mergeSort from "./mergeSort.js";
 import Node from "./classNode.js";
 import findLastLeftNode from "./findLastLeftNode.js";
+import getMaxHeight from "./getMaxHeight.js";
 
 export default class Tree {
   constructor(array) {
@@ -142,5 +143,94 @@ export default class Tree {
     if (currentNode.left != null) queue.push(currentNode.left);
     if (currentNode.right != null) queue.push(currentNode.right);
     return this.levelOrder(callback, queue, array);
+  }
+
+  preOrder(callback = null, currentNode = this.root, array = []) {
+    if (!currentNode) {
+      if (callback === null) {
+        return array;
+      } else return;
+    }
+    if (callback === null) array.push(currentNode.data);
+    else callback(currentNode.data);
+    this.preOrder(callback, currentNode.left, array);
+    this.preOrder(callback, currentNode.right, array);
+    return array;
+  }
+
+  inOrder(callback = null, currentNode = this.root, array = []) {
+    if (!currentNode) {
+      if (callback === null) {
+        return array;
+      } else return;
+    }
+    this.inOrder(callback, currentNode.left, array);
+    if (callback === null) array.push(currentNode.data);
+    else callback(currentNode.data);
+    this.inOrder(callback, currentNode.right, array);
+    return array;
+  }
+
+  postOrder(callback = null, currentNode = this.root, array = []) {
+    if (!currentNode) {
+      if (callback === null) {
+        return array;
+      } else return;
+    }
+    this.postOrder(callback, currentNode.left, array);
+    this.postOrder(callback, currentNode.right, array);
+    if (callback === null) array.push(currentNode.data);
+    else callback(currentNode.data);
+    return array;
+  }
+
+  height(findData, currentNode = this.root) {
+    if (currentNode === null) return null;
+    if (currentNode.data === findData) return getMaxHeight(currentNode);
+    if (findData < currentNode.data) {
+      return this.height(findData, currentNode.left);
+    }
+    if (findData > currentNode.data) {
+      return this.height(findData, currentNode.right);
+    }
+  }
+
+  depth(findData, currentNode = this.root, steps = 0) {
+    if (currentNode === null) return null;
+    if (currentNode.data === findData) return steps;
+    if (findData < currentNode.data) {
+      steps++;
+      return this.depth(findData, currentNode.left, steps);
+    }
+    if (findData > currentNode.data) {
+      steps++;
+      return this.depth(findData, currentNode.right, steps);
+    }
+  }
+
+  isBalanced(currentNode = this.root) {
+    // Base condition
+    if (currentNode == null) return true;
+
+    // for left and right subtree height
+    let leftHeight = getMaxHeight(currentNode.left);
+    let rightHeight = getMaxHeight(currentNode.right);
+
+    // allowed values for (leftHeight - rightHeight) are 1, -1, 0
+    if (
+      Math.abs(leftHeight - rightHeight) <= 1 &&
+      this.isBalanced(currentNode.left) == true &&
+      this.isBalanced(currentNode.right) == true
+    )
+      return true;
+
+    // if we reach here means tree is not
+    // height-balanced tree
+    return false;
+  }
+
+  rebalance() {
+    const array = this.inOrder();
+    this.root = buildTree(array);
   }
 }
