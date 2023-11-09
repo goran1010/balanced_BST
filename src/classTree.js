@@ -53,9 +53,9 @@ export default class Tree {
 
   // Find a way to refactor this delete method !
   delete(deleteData, previousNode = this.root, currentNode = this.root) {
-    if (currentNode === null) return;
+    if (!currentNode) return;
     if (currentNode.data === deleteData) {
-      if (currentNode.left === null && currentNode.right === null) {
+      if (!currentNode.left && !currentNode.right) {
         if (previousNode.data === currentNode.data) {
           this.root = null;
           return;
@@ -104,7 +104,7 @@ export default class Tree {
         return;
       }
     }
-    if (currentNode === null) return;
+    if (!currentNode) return;
     if (deleteData < currentNode.data)
       return this.delete(
         deleteData,
@@ -117,5 +117,30 @@ export default class Tree {
         (previousNode = currentNode),
         currentNode.right
       );
+  }
+
+  find(findData, currentNode = this.root) {
+    if (currentNode === null) return null;
+    if (currentNode.data === findData) return currentNode;
+    if (findData < currentNode.data) {
+      return this.find(findData, currentNode.left);
+    }
+    if (findData > currentNode.data) {
+      return this.find(findData, currentNode.right);
+    }
+  }
+
+  levelOrder(callback = null, queue = [this.root], array = []) {
+    let currentNode = queue.shift();
+    if (!currentNode) {
+      if (callback === null) {
+        return array;
+      } else return;
+    }
+    if (callback === null) array.push(currentNode.data);
+    else callback(currentNode.data);
+    if (currentNode.left != null) queue.push(currentNode.left);
+    if (currentNode.right != null) queue.push(currentNode.right);
+    return this.levelOrder(callback, queue, array);
   }
 }

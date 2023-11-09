@@ -8,8 +8,12 @@ const testTree = new Tree(testArray);
 testTree.insert(-2);
 testTree.insert(10000);
 
-testTree.prettyPrint();
-
 testTree.delete(8);
 
+testTree.find(10000);
+
 testTree.prettyPrint();
+
+testTree.levelOrder(console.log);
+
+console.log(testTree.levelOrder());
